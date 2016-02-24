@@ -1,8 +1,7 @@
-# Stripe The Web Backups Module
+# Spark Green Backups Module
 
 ## Authors
-	* Darren Inwood <darren@stripetheweb.com>
-	* Dylan Sweetensen <dylan@stripetheweb.com>
+	* Julian Smith <julian@wubies.org>
 
 ## Overview
 This module allows Database and Assets backups to be conducted via the CMS, URLs and commandline. 
@@ -12,29 +11,17 @@ It allows facilitates the transfer of backups to a target server.
 	* SilverStripe 3.*
 
 ## Installation
-Add the module directory to the root directory of your website.
+composer require spark-green/silverstripe-backup dev-master
 
 ## Usage
 
 ### Setup
-The module has two configurable settings in the _config.php file.
-
-The first is setting a list of IP addresses from which the task can be called. To add an IP address, just add one to the array.
-To remove an IP address, just remove it from the array. 
-
-The second setting is the SSH settings for transfering to another server. Uncomment the function and set User, Host and Path in the array to override the defaults.
-The defaults are:
-
-	* User - root
-	* Host - dev.stw.io
-	* Path - /bigdata/backup
-
-Note: SSH keys must be set up to allow apache user to ssh to target server without password
+SSH keys must be set up to allow apache user to ssh to target server without password
 
 ###  CMS
 Backup will appear as a tab in the Settings of the CMS. Here you can set whether you would like it backup the database, assets, or both. You can also choose whether you would like to transer the files via SSH as well as defining the SSH settings for transfer. Remember to save your settings before pressing the 'Back up now' button.
 
-You must also enter up to two IP address from which you would like the task to be called. These address will be added to those set in the _config.php.
+You must also enter up to two IP address from which you would like the task to be called.
 
 ### via Commandline
 To call the task via commandline, first, change the directory to your webroot using the 'cd' command: 
