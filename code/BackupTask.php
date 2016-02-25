@@ -4,7 +4,7 @@
 *
 * @package backup
 */
-class BackupTask extends CliController {
+class BackupTask extends BuildTask {
 	
 	protected $title = 'Perform a backup task';
 	
@@ -27,8 +27,7 @@ class BackupTask extends CliController {
 	protected static $ip_array;
 
 
-	public function init() {
-		parent::init();
+	public function run() {
 
 		//Get parameter overrides SiteConfig settings
 		if(isset($_GET['db']) && $_GET['db'] != null){
@@ -112,33 +111,33 @@ class BackupTask extends CliController {
 		$command = sprintf(
 			'%s %s',
 			$rm,
-			ASSETS_PATH.DIRECTORY_SEPARATOR.SS_DATABASE_NAME.'*'
+			ASSETS_PATH.DIRECTORY_SEPARATOR.$databaseConfig['database'].'*'
 		);
 		// var_dump($command);
 		shell_exec($command);
-		
+
 		// Backup database
 		if ( self::$backup_db ) {
-			$database_backup_path = SS_DATABASE_NAME.'-'.date('Y-m-d-h-i-s').'.sql';
+			$database_backup_path = $databaseConfig['database'].'-'.date('Y-m-d-h-i-s').'.sql';
 			$command = sprintf(
 				'cd %s && %s -u %s %s -r %s %s && %s %s',
 				escapeshellarg(ASSETS_PATH),
 				$mysqldump,
-				escapeshellarg(SS_DATABASE_USERNAME),
-				(SS_DATABASE_PASSWORD ? '-p'.escapeshellarg(SS_DATABASE_PASSWORD):''),
+				escapeshellarg($databaseConfig['username']),
+				($databaseConfig['password'] ? '-p '.escapeshellarg($databaseConfig['password']):''),
 				escapeshellarg($database_backup_path),
-				escapeshellarg(SS_DATABASE_NAME),
+				escapeshellarg($databaseConfig['database']),
 				$gzip,
 				escapeshellarg($database_backup_path)
 			);
-			//var_dump($command);
+			// var_dump($command);
 			shell_exec($command);
 
 		}
 		
 		// Backup assets
 		if ( self::$backup_assets ) {
-			$assets_backup_path = SS_DATABASE_NAME.'-assets-'.date('Y-m-d-h-i-s').'.tar.gz';
+			$assets_backup_path = $databaseConfig['database'].'-assets-'.date('Y-m-d-h-i-s').'.tar.gz';
 			$command = sprintf(
 				'cd %s && %s zcpf %s assets',
 				escapeshellarg(BASE_PATH),
@@ -188,7 +187,7 @@ class BackupTask extends CliController {
 					self::$ssh_path
 				);
 			}
-			var_dump($command);
+			// var_dump($command);
 			shell_exec($command);
 		}
 	}
@@ -230,6 +229,8 @@ class BackupTask extends CliController {
 
 			return Security::permissionFailure($this, 'Your IP address does not match the nominated IP addresses for this task');
 		}
+		
+		$this->process();
 
 	}
 

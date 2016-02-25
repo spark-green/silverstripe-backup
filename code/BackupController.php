@@ -19,7 +19,7 @@ class BackupController extends Controller{
 			$command = sprintf(
 				'cd %s && php framework/cli-script.php %s',
 				escapeshellarg(BASE_PATH),
-				escapeshellarg('/BackupTask')
+				escapeshellarg('/dev/tasks/BackupTask')
 				);
 			shell_exec($command);
 
