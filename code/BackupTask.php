@@ -4,7 +4,7 @@
 *
 * @package backup
 */
-class BackupTask extends DailyTask {
+class BackupTask extends CliController {
 	
 	protected $title = 'Perform a backup task';
 	
@@ -112,33 +112,33 @@ class BackupTask extends DailyTask {
 		$command = sprintf(
 			'%s %s',
 			$rm,
-			ASSETS_PATH.DIRECTORY_SEPARATOR.$databaseConfig['database'].'*'
+			ASSETS_PATH.DIRECTORY_SEPARATOR.SS_DATABASE_NAME.'*'
 		);
 		// var_dump($command);
 		shell_exec($command);
-
+		
 		// Backup database
 		if ( self::$backup_db ) {
-			$database_backup_path = $databaseConfig['database'].'-'.date('Y-m-d-h-i-s').'.sql';
+			$database_backup_path = SS_DATABASE_NAME.'-'.date('Y-m-d-h-i-s').'.sql';
 			$command = sprintf(
 				'cd %s && %s -u %s %s -r %s %s && %s %s',
 				escapeshellarg(ASSETS_PATH),
 				$mysqldump,
-				escapeshellarg($databaseConfig['username']),
-				($databaseConfig['password'] ? '-p '.escapeshellarg($databaseConfig['password']):''),
+				escapeshellarg(SS_DATABASE_USERNAME),
+				(SS_DATABASE_PASSWORD ? '-p'.escapeshellarg(SS_DATABASE_PASSWORD):''),
 				escapeshellarg($database_backup_path),
-				escapeshellarg($databaseConfig['database']),
+				escapeshellarg(SS_DATABASE_NAME),
 				$gzip,
 				escapeshellarg($database_backup_path)
 			);
-			// var_dump($command);
+			//var_dump($command);
 			shell_exec($command);
 
 		}
 		
 		// Backup assets
 		if ( self::$backup_assets ) {
-			$assets_backup_path = $databaseConfig['database'].'-assets-'.date('Y-m-d-h-i-s').'.tar.gz';
+			$assets_backup_path = SS_DATABASE_NAME.'-assets-'.date('Y-m-d-h-i-s').'.tar.gz';
 			$command = sprintf(
 				'cd %s && %s zcpf %s assets',
 				escapeshellarg(BASE_PATH),
@@ -188,7 +188,7 @@ class BackupTask extends DailyTask {
 					self::$ssh_path
 				);
 			}
-			// var_dump($command);
+			var_dump($command);
 			shell_exec($command);
 		}
 	}
