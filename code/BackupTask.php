@@ -124,7 +124,7 @@ class BackupTask extends BuildTask {
 				escapeshellarg(ASSETS_PATH),
 				$mysqldump,
 				escapeshellarg($databaseConfig['username']),
-				($databaseConfig['password'] ? '-p '.escapeshellarg($databaseConfig['password']):''),
+				($databaseConfig['password'] ? '-p'.escapeshellarg($databaseConfig['password']):''),
 				escapeshellarg($database_backup_path),
 				escapeshellarg($databaseConfig['database']),
 				$gzip,
