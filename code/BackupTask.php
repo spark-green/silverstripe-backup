@@ -27,7 +27,7 @@ class BackupTask extends BuildTask {
 	protected static $ip_array;
 
 
-	public function run() {
+	public function run($request) {
 
 		//Get parameter overrides SiteConfig settings
 		if(isset($_GET['db']) && $_GET['db'] != null){
